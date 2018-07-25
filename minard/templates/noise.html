@@ -91,117 +91,45 @@
                            .y(function (d) {return yify(d.y);});
     </script>
 --!>
-    <script src="https://code.highcharts.com/highcharts.js"></script>
 <!--
+    <script src="https://code.highcharts.com/highcharts.js"></script>
     <script src="https://code.highcharts.com/modules/series-label.js"></script>
     <script src="https://code.highcharts.com/modules/exporting.js"></script>
     <script src="https://code.highcharts.com/modules/export-data.js"></script>
 --!>
+    <script src="static/highcharts/highcharts.js"></script>
+    <script src="static/js/dynamic_plot.js"></script>
     <script>
-        Highcharts.chart('noise-chart', {title:{text:'Per-Crate Noise Rates'}, 
-                                       xAxis:{title:{text:'Run Number'}}, 
-                                       yAxis:{title:{text:'Noise Rate [Hz]'},
-                                              floor:0,
-                                              ceiling:2500},
-        legend: {
-            layout: 'vertical',
-            align: 'right',
-            verticalalign: 'middle'
-        },
-
-        plotoptions: {
-            series: {
-                label: {
-                    connectorallowed: false
-                },
-                pointstart: 2010
-            }
-        },
-    
         // for each crate, build a time-series by iterating over each run
-        series:[{% for i in range(19) %} 
+        noiseseries = [{% for i in range(19) %} 
                     {
                         name: 'Crate {{ i }}', 
                         data: [{% for run in runs|reverse %} 
-                                   {% if run %} 
+                                   {% if run and run['average_noise_crate'][i]%} 
                                        [{{ run['run_number'] }}, 
-                                        {{ run['average_noise_crate'][i] }}] 
-                                   {% else %} 
-                                       null 
-                                   {% endif %}, 
+                                        {{ run['average_noise_crate'][i] }}],
+                                   {% endif %}
                                {% endfor %}] 
                     },
-                {% endfor %}],
-
-        responsive: {
-            rules: [{
-                condition: {
-                    maxWidth: 500
-                },
-                chartOptions: {
-                    legend: {
-                        layout: 'horizontal',
-                        align: 'center',
-                        verticalAlign: 'bottom'
-                    }
-                }
-            }]
-        }
-    });
-
-        Highcharts.chart('hhp-chart', {title:{text:'Per-Crate Gains'}, 
-                                       xAxis:{title:{text:'Run Number'}}, 
-                                       yAxis:{title:{text:'QHS HHP [cap]'},
-                                              floor:0,
-                                              ceiling:150},
-        legend: {
-            layout: 'vertical',
-            align: 'right',
-            verticalalign: 'middle'
-        },
-
-        plotoptions: {
-            series: {
-                label: {
-                    connectorallowed: false
-                },
-                pointstart: 2010
-            }
-        },
-    
+                {% endfor %}];
+        mkDynamicPlot('noise-chart', 
+                      'Per-Crate Noise Rates', 'Run Number', 'Noise Rate [Hz]', 
+                      noiseseries, 0, 2500);
         // for each crate, build a time-series by iterating over each run
-        series:[{% for i in range(19) %} 
+        gainseries = [{% for i in range(19) %} 
                     {
                         name: 'Crate {{ i }}', 
                         data: [{% for run in runs|reverse %} 
-                                   {% if run %}
+                                   {% if run and run['average_qhl_hhp_crate'][i]%} 
                                        [{{ run['run_number'] }}, 
-                                       {% if run['average_qhl_hhp_crate'][i] %}
-                                          {{ run['average_qhl_hhp_crate'][i] }}
-                                       {% else %}
-                                          null
-                                       {% endif %}
-                                   {% endif %}], 
+                                        {{ run['average_qhl_hhp_crate'][i] }}],
+                                   {% endif %}
                                {% endfor %}] 
                     },
-                {% endfor %}],
-
-        responsive: {
-            rules: [{
-                condition: {
-                    maxWidth: 500
-                },
-                chartOptions: {
-                    legend: {
-                        layout: 'horizontal',
-                        align: 'center',
-                        verticalAlign: 'bottom'
-                    }
-                }
-            }]
-        }
-    });
-
+                {% endfor %}];
+        mkDynamicPlot('hhp-chart', 
+                      'Per-Crate Gains', 'Run Number', 'QHS HHP [cap]',
+                      gainseries, 0, 150);
     </script>
 
 {% endblock %}
