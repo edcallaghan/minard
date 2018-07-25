@@ -10,9 +10,6 @@
 <div class="container">
     <div id="noise-chart"></div>
     <div id="hhp-chart"></div>
-<!--<img src="{{ url_for('static', filename='pmtnoise/noise-rate_time-series.png') }}" class="img-responsive" alt="Noise time-series">
-    <img src="{{ url_for('static', filename='pmtnoise/qhl-hhp_time-series.png') }}" class="img-responsive" alt="HHP time-series">--!>
-
     <table class="table table-hover">
       <thead>
       <tr>
@@ -76,27 +73,6 @@
 {% endblock %}
 
 {% block script %}
-<!--
-    <script src="{{ url_for('static', filename='js/d3.js') }}"></script>
-    <script>
-        var svg = d3.select('svg'), 
-            margin = {top:20, bottom:20, right:20, left: 50}, 
-            width = +svg.attr("width") - margin.left - margin.right,
-            height = +svg.attr("height") - margin.top - margin.bottom,
-            g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-    var xify = d3.scaleLinear().rangeRound([0,width])
-    var yify = d3.scaleLinear().rangeRound([height,0])
-    var lineify = d3.line().x(function (d) {return xify(d.x);})
-                           .y(function (d) {return yify(d.y);});
-    </script>
---!>
-<!--
-    <script src="https://code.highcharts.com/highcharts.js"></script>
-    <script src="https://code.highcharts.com/modules/series-label.js"></script>
-    <script src="https://code.highcharts.com/modules/exporting.js"></script>
-    <script src="https://code.highcharts.com/modules/export-data.js"></script>
---!>
     <script src="static/highcharts/highcharts.js"></script>
     <script src="static/js/dynamic_plot.js"></script>
     <script>
@@ -105,10 +81,10 @@
                     {
                         name: 'Crate {{ i }}', 
                         data: [{% for run in runs|reverse %} 
-                                   {% if run and run['average_noise_crate'][i]%} 
-                                       [{{ run['run_number'] }}, 
-                                        {{ run['average_noise_crate'][i] }}],
-                                   {% endif %}
+                                {% if run and run['average_noise_crate'][i]%} 
+                                 [{{ run['run_number'] }}, 
+                                  {{ run['average_noise_crate'][i] }}],
+                                {% endif %}
                                {% endfor %}] 
                     },
                 {% endfor %}];
@@ -120,10 +96,10 @@
                     {
                         name: 'Crate {{ i }}', 
                         data: [{% for run in runs|reverse %} 
-                                   {% if run and run['average_qhl_hhp_crate'][i]%} 
-                                       [{{ run['run_number'] }}, 
-                                        {{ run['average_qhl_hhp_crate'][i] }}],
-                                   {% endif %}
+                                {% if run and run['average_qhl_hhp_crate'][i]%} 
+                                 [{{ run['run_number'] }}, 
+                                  {{ run['average_qhl_hhp_crate'][i] }}],
+                                {% endif %}
                                {% endfor %}] 
                     },
                 {% endfor %}];
@@ -131,5 +107,4 @@
                       'Per-Crate Gains', 'Run Number', 'QHS HHP [cap]',
                       gainseries, 0, 150);
     </script>
-
 {% endblock %}
