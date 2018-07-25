@@ -17,12 +17,12 @@ def runs_after_run(run, maxrun=None):
     if maxrun:
         rows = conn.execute('SELECT * FROM pmtnoise'
                             ' WHERE %s < run_number AND run_number < %s'
-                            ' ORDER BY run_number DESC;', 
+                            ' ORDER BY run_number DESC LIMIT 300;', 
                             (int(run), int(maxrun)))
     else:
         rows = conn.execute('SELECT * FROM pmtnoise' 
                             ' WHERE %s < run_number'
-                            ' ORDER BY run_number DESC;', 
+                            ' ORDER BY run_number DESC LIMIT 300;', 
                             (int(run)))
     return dictify(rows)
 
